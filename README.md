@@ -45,8 +45,8 @@ Example for local file system:
     <servlet-name>root</servlet-name>
     <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
 <init-param>
-        <param-name>rootpath</param-name>
-        <param-value>/path/to/filesystem/folder</param-value>
+    <param-name>rootpath</param-name>
+    <param-value>/path/to/filesystem/folder</param-value>
 </init-param>
 </servlet>
 <servlet-mapping>
