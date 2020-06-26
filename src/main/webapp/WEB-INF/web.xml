@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+    <description>WebDAV gateway for accessing to different file systems</description>
+
+    <!-- Example 
+    <servlet>
+        <servlet-name>Local</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>/home/app/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>domain</param-name>
+            <param-value>CORP</param-value>
+        </init-param>
+        <init-param>
+            <param-name>login</param-name>
+            <param-value>mylogin</param-value>
+        </init-param>
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>mypassword</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Local</servlet-name>
+        <url-pattern>/local/*</url-pattern>
+    </servlet-mapping>
+    -->
+
+</web-app>

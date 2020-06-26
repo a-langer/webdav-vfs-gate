@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE xml>
+<configuration scan="true" scanPeriod="10 seconds" packagingData="false" debug="false">
+
+    <!-- Trace < Debug < Info < Warn < Error < Off https://logback.qos.ch/manual/configuration.html -->
+
+    <Property name="logpath" value="logs" />
+    <Property name="logname" value="webdav-vfs" />
+    <Property name="logsize" value="5MB" />
+    <Property name="pattern_default" value="%-2p %marker %d{yyyy-MM-dd HH:mm:ss} %logger{16} - %m%n" />
+    <Property name="pattern" value="%-2p %d{HH:mm:ss} %logger{16} - %m%n" />
+
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logpath}/${logname}.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logpath}/${logname}-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>${logsize}</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AUDIT_DISK" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logpath}/audit-disk.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logpath}/audit-disk-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>${logsize}</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.alanger.webdav.AUDIT_LOGGER_NAME" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="AUDIT_DISK" />
+    </logger>
+
+    <logger name="com.github.alanger.webdav" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ROLLING" />
+    </logger>
+
+    <logger name="com.github.alanger.webdav.VfsDavResource" level="ERROR" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ROLLING" />
+    </logger>
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ROLLING" />
+    </root>
+</configuration>

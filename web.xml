@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+
+    <description>WebDAV gateway for accessing to different file systems</description>
+
+    <!-- Example local file system -->
+    <servlet>
+        <servlet-name>root</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>./src/test/resources/com/github/alanger/webdav-vfs-gate</param-value>
+        </init-param>
+        <init-param>
+            <!-- Set debug level INFO in logback.xml -->
+            <param-name>logger-name</param-name>
+            <param-value>com.github.alanger.webdav.AUDIT_LOGGER_NAME</param-value>
+        </init-param>
+        <init-param>
+            <param-name>audit-methods</param-name>
+            <param-value>GET,MKCOL,DELETE,COPY,MOVE,PUT,PROPPATH</param-value>
+        </init-param>
+        <init-param>
+            <param-name>files-cache</param-name>
+            <param-value>org.apache.commons.vfs2.cache.SoftRefFilesCache</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cache-strategy</param-name>
+            <param-value>oncall</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>root</servlet-name>
+        <url-pattern>/root/*</url-pattern>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example webdav file system -->
+    <servlet>
+        <servlet-name>dav</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>webdav4://localhost:8080/root/test1</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dav</servlet-name>
+        <url-pattern>/root/dav/*</url-pattern>
+        <url-pattern>/dav/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example http file system -->
+    <servlet>
+        <servlet-name>http</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>http4://localhost:8080/root/test1</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>http</servlet-name>
+        <url-pattern>/root/http/*</url-pattern>
+        <url-pattern>/http/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example ftp file system -->
+    <servlet>
+        <servlet-name>ftp</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>ftp://speedtest.tele2.net/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>builder</param-name>
+            <param-value>org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder</param-value>
+        </init-param>
+        <init-param>
+            <param-name>builder.controlEncoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>builder.connectTimeout</param-name>
+            <param-value>5000</param-value>
+        </init-param>
+        <init-param>
+            <param-name>builder.userDirIsRoot</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>builder.autodetectUtf8</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ftp</servlet-name>
+        <url-pattern>/root/ftp/*</url-pattern>
+        <url-pattern>/ftp/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example ftp file system with login and password in connection string -->
+    <servlet>
+        <servlet-name>ftp2</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>ftp://demo:password@test.rebex.net</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ftp2</servlet-name>
+        <url-pattern>/root/ftp2/*</url-pattern>
+        <url-pattern>/ftp2/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example ftp file system with login and password in initialize parameters -->
+    <servlet>
+        <servlet-name>ftp3</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>ftp://ftp.dlptest.com/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>login</param-name>
+            <param-value>dlpuser@dlptest.com</param-value>
+        </init-param>
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>SzMf7rTE4pCrf9dV286GuNe4N</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ftp3</servlet-name>
+        <url-pattern>/root/ftp3/*</url-pattern>
+        <url-pattern>/ftp3/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example sftp file system -->
+    <servlet>
+        <servlet-name>sftp</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <param-value>sftp://demo:password@test.rebex.net</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sftp</servlet-name>
+        <url-pattern>/root/sftp/*</url-pattern>
+        <url-pattern>/sftp/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example sftp file system with connection string from system properties -->
+    <servlet>
+        <servlet-name>sftp2</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <!-- -Dsftp.connection.string="sftp://mylogin:mypassword@hostname:22/path" -->
+            <param-value>${sftp.connection.string}</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sftp2</servlet-name>
+        <url-pattern>/root/sftp2/*</url-pattern>
+        <url-pattern>/sftp2/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Example smb file system with connection string from system properties -->
+    <servlet>
+        <servlet-name>smb</servlet-name>
+        <servlet-class>com.github.alanger.webdav.VfsWebDavServlet</servlet-class>
+        <init-param>
+            <param-name>rootpath</param-name>
+            <!-- -Dsmb.connection.string="smb://DOMAIN\user:password@hostname:445/path" -->
+            <param-value>${smb.connection.string}</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>smb</servlet-name>
+        <url-pattern>/root/smb/*</url-pattern>
+        <url-pattern>/smb/*</url-pattern>
+    </servlet-mapping>
+</web-app>
