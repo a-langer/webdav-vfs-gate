@@ -35,7 +35,7 @@ This project implement WebDAV gateway for accessing to different file systems. T
 
 ## Usage
 
-Deploy `webdav-vfs-gate-<version>.war` to servlets container ([Tomcat][7], [Jetty][8], [JBoss][9] or similar).
+Deploy [webdav-vfs-gate-<version>.war][13] to servlets container ([Tomcat][7], [Jetty][8], [JBoss][9] or similar).
 Add servlet declarations to `web.xml` (see documentation of servlet container).  
 
 Example for local file system:
@@ -200,3 +200,4 @@ Add this dependency to your `pom.xml` to reference the library:
 [10]: https://commons.apache.org/proper/commons-vfs/api.html
 [11]: https://cwiki.apache.org/confluence/display/COMMONS/VfsCacheStrategy
 [12]: http://logback.qos.ch/manual/configuration.html
+[13]: https://github.com/a-langer/webdav-vfs-gate/releases
