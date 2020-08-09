@@ -35,6 +35,11 @@
         <developerConnection>git@github.com:a-langer/webdav-vfs-gate.git</developerConnection>
         <url>https://github.com/a-langer/webdav-vfs-gate</url>
     </scm>
+    
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/a-langer/webdav-vfs-gate</url>
+    </ciManagement>
 
     <distributionManagement>
         <snapshotRepository>

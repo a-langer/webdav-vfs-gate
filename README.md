@@ -27,7 +27,7 @@ This project implement WebDAV gateway for accessing to different file systems. T
 * `files-cache` - class full name of [Apache VFS][10] cache implementation, by default is `org.apache.commons.vfs2.cache.SoftRefFilesCache`.
 * `cache-strategy` - name of [Apache VFS][11] cache strategy, may take values: `manual`, `onresolve` or `oncall`. By default is `oncall`.
 * `builder` - class full name of [Apache VFS][1] file system config builder, specific to each file system, ex.: for FTP is `org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder`.
-* `builder.<method_name>` - string parameter determine method name for invoke in instance of file system config builder. To call  setters needs convert method name to property name, ex.: method `setControlEncoding` must be converted to `controlEncoding`. Value of parameter may be string, integer or boolean.
+* `builder.<method_name>` - string parameter determine method name for invoke in instance of file system config builder. To call  setters needs convert method name to property name, ex.: method `setControlEncoding` must be converted to `controlEncoding`. Value of parameter may be string, integer or boolean (see example in [web.xml](./web.xml#L79-L98)).
 * `logger-name` - name for servlet logger, by default is `com.github.alanger.webdav.VfsWebDavServlet`.
 * `audit-methods` - a comma-separated list of http methods for file operations audit logs, optional parameter.
 * `createAbsoluteURI` - boolean parameter, enables using an absolute URI instead of a relative, by default is `false`.
@@ -158,16 +158,16 @@ Example for file system with audit log of file operations:
 </servlet-mapping>
 ```
 
-More example of servlet configurations see in [web.xml](./web.xml) file.  
-More example of file systems see in [Apache Commons VFS][3] documentation.  
-Logger configuration (see Logback [documentation][12]).  
-
-
-MIME types configuration (see [content-types.properties](./content-types.properties) file):
+Example for MIME types configuration (see [content-types.properties](./content-types.properties) file):
 
 ```bash
 -Dcontent.types.user.table=/path/to/config/content-types.properties
 ```
+
+## More examples
+Servlet configurations see in [web.xml](./web.xml) file.  
+File systems see in [Apache Commons VFS][3] documentation.  
+Logger configuration see in [Logback][12] documentation.  
 
 ## Getting the library using Maven
 
@@ -197,7 +197,7 @@ Add this dependency to your `pom.xml` to reference the library:
 [7]: http://tomcat.apache.org/
 [8]: https://www.eclipse.org/jetty/
 [9]: https://www.jboss.org/
-[10]: https://commons.apache.org/proper/commons-vfs/api.html
+[10]: https://commons.apache.org/proper/commons-vfs/api.html#Cache
 [11]: https://cwiki.apache.org/confluence/display/COMMONS/VfsCacheStrategy
 [12]: http://logback.qos.ch/manual/configuration.html
 [13]: https://github.com/a-langer/webdav-vfs-gate/releases
