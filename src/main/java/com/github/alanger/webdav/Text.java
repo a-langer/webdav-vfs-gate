@@ -26,7 +26,7 @@ public class Text {
     /**
      * used for the md5
      */
-    public static final char[] hexTable = "0123456789abcdef".toCharArray();
+    protected static final char[] hexTable = "0123456789abcdef".toCharArray();
 
     /**
      * Calculate an MD5 hash of the string given.
@@ -134,7 +134,7 @@ public class Text {
             return new String[0];
         }
 
-        ArrayList<String> strings = new ArrayList<String>();
+        ArrayList<String> strings = new ArrayList<>();
         int pos;
         int lastpos = 0;
 
@@ -286,12 +286,12 @@ public class Text {
      * mark        = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
      * </pre>
      */
-    public static BitSet URISave;
+    protected static BitSet URISave;
 
     /**
      * Same as {@link #URISave} but also contains the '/'
      */
-    public static BitSet URISaveEx;
+    protected static BitSet URISaveEx;
 
     static {
         URISave = new BitSet(256);
@@ -426,7 +426,7 @@ public class Text {
         for (int k = 0; k < utf8.length; k++) {
             byte b = utf8[k];
             if (b == escape) {
-                out.write((decodeDigit(utf8[++k]) << 4) + decodeDigit(utf8[++k]));
+                out.write((decodeDigit(utf8[++k]) << 4) + (decodeDigit(utf8[++k]) & 0xff));
             } else {
                 out.write(b);
             }
@@ -782,11 +782,11 @@ public class Text {
         // +--+-+--------+-+-----------------+
         // | |p|--> |q|--> |
         // +--+-+--------+-+-----------------+
-        int p = 0, q = value.indexOf("${"); // Find first ${
+        int p = 0, q = value.indexOf("${"); // Find first '${'
         while (q != -1) {
-            result.append(value.substring(p, q)); // Text before ${
+            result.append(value.substring(p, q)); // Text before '${'
             p = q;
-            q = value.indexOf("}", q + 2); // Find }
+            q = value.indexOf("}", q + 2); // Find '}'
             if (q != -1) {
                 String variable = value.substring(p + 2, q);
                 String replacement = variables.getProperty(variable);
@@ -799,7 +799,7 @@ public class Text {
                 }
                 result.append(replacement);
                 p = q + 1;
-                q = value.indexOf("${", p); // Find next ${
+                q = value.indexOf("${", p); // Find next '${'
             }
         }
         result.append(value.substring(p, value.length())); // Trailing text

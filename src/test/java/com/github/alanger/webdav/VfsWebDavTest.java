@@ -370,7 +370,7 @@ public class VfsWebDavTest {
         assertEquals(404, deleteFile("/test1/new_dir"));
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void test20_fileSysyemBuilderTest() throws Throwable {
         MockServletConfig config = new MockServletConfig();
         config.addInitParameter("rootpath", System.getProperty("rootpath"));
@@ -402,7 +402,7 @@ public class VfsWebDavTest {
         servlet.init(config);
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void test23_cacheStrategyTest() throws Throwable {
         MockServletConfig config = new MockServletConfig();
         config.addInitParameter("rootpath", System.getProperty("rootpath"));
@@ -420,7 +420,7 @@ public class VfsWebDavTest {
         servlet.init(config);
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void test25_filesCacheTest() throws Throwable {
         MockServletConfig config = new MockServletConfig();
         config.addInitParameter("rootpath", System.getProperty("rootpath"));
@@ -445,7 +445,7 @@ public class VfsWebDavTest {
         config.addInitParameter("logger-name", "com.github.alanger.webdav.CustomLoggerName");
         VfsWebDavServlet servlet = new VfsWebDavServlet();
         servlet.init(config);
-        assertEquals(servlet.getLogger().getName(), "com.github.alanger.webdav.CustomLoggerName");
+        assertEquals("com.github.alanger.webdav.CustomLoggerName", servlet.getLogger().getName());
     }
 
     @Test

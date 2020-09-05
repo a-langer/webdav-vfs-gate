@@ -232,16 +232,16 @@ public class VfsDavResource implements DavResource {
 
         // set (or reset) fundamental properties
         if (getDisplayName() != null) {
-            properties.add(new DefaultDavProperty<String>(DavPropertyName.DISPLAYNAME, getDisplayName()));
+            properties.add(new DefaultDavProperty<>(DavPropertyName.DISPLAYNAME, getDisplayName()));
         }
         if (isCollection()) {
             properties.add(new ResourceType(ResourceType.COLLECTION));
             // Windows XP support
-            properties.add(new DefaultDavProperty<String>(DavPropertyName.ISCOLLECTION, "1"));
+            properties.add(new DefaultDavProperty<>(DavPropertyName.ISCOLLECTION, "1"));
         } else {
             properties.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
             // Windows XP support
-            properties.add(new DefaultDavProperty<String>(DavPropertyName.ISCOLLECTION, "0"));
+            properties.add(new DefaultDavProperty<>(DavPropertyName.ISCOLLECTION, "0"));
         }
 
         /*
@@ -270,26 +270,26 @@ public class VfsDavResource implements DavResource {
 
         public void setContentLanguage(String contentLanguage) {
             if (contentLanguage != null) {
-                properties.add(new DefaultDavProperty<String>(DavPropertyName.GETCONTENTLANGUAGE, contentLanguage));
+                properties.add(new DefaultDavProperty<>(DavPropertyName.GETCONTENTLANGUAGE, contentLanguage));
             }
         }
 
         public void setContentLength(long contentLength) {
             if (contentLength > IOUtil.UNDEFINED_LENGTH) {
-                properties.add(new DefaultDavProperty<String>(DavPropertyName.GETCONTENTLENGTH, contentLength + ""));
+                properties.add(new DefaultDavProperty<>(DavPropertyName.GETCONTENTLENGTH, contentLength + ""));
             }
         }
 
         public void setContentType(String mimeType, String encoding) {
             String contentType = IOUtil.buildContentType(mimeType, encoding);
             if (contentType != null) {
-                properties.add(new DefaultDavProperty<String>(DavPropertyName.GETCONTENTTYPE, contentType));
+                properties.add(new DefaultDavProperty<>(DavPropertyName.GETCONTENTTYPE, contentType));
             }
         }
 
         public void setCreationTime(long creationTime) {
             String created = IOUtil.getCreated(creationTime);
-            properties.add(new DefaultDavProperty<String>(DavPropertyName.CREATIONDATE, created));
+            properties.add(new DefaultDavProperty<>(DavPropertyName.CREATIONDATE, created));
         }
 
         public void setModificationTime(long modTime) {
@@ -299,18 +299,18 @@ public class VfsDavResource implements DavResource {
                 modificationTime = modTime;
             }
             String lastModified = IOUtil.getLastModified(modificationTime);
-            properties.add(new DefaultDavProperty<String>(DavPropertyName.GETLASTMODIFIED, lastModified));
+            properties.add(new DefaultDavProperty<>(DavPropertyName.GETLASTMODIFIED, lastModified));
         }
 
         public void setETag(String etag) {
             if (etag != null) {
-                properties.add(new DefaultDavProperty<String>(DavPropertyName.GETETAG, etag));
+                properties.add(new DefaultDavProperty<>(DavPropertyName.GETETAG, etag));
             }
         }
 
         public void setProperty(Object propertyName, Object propertyValue) {
             if (propertyValue == null) {
-                log.warn("Ignore 'setProperty' for " + propertyName + "with null value.");
+                log.warn("Ignore 'setProperty' for {} with null value.", propertyName);
                 return;
             }
 
@@ -324,7 +324,7 @@ public class VfsDavResource implements DavResource {
                     // create property name with default DAV: namespace
                     pName = DavPropertyName.create(propertyName.toString());
                 }
-                properties.add(new DefaultDavProperty<Object>(pName, propertyValue));
+                properties.add(new DefaultDavProperty<>(pName, propertyValue));
             }
         }
     }
@@ -408,7 +408,7 @@ public class VfsDavResource implements DavResource {
         if (log.isTraceEnabled())
             log.trace("# getMembers: {}, exist: {}, isCollection: {}", getResourcePath(), exists(), isCollection());
 
-        ArrayList<DavResource> list = new ArrayList<DavResource>();
+        ArrayList<DavResource> list = new ArrayList<>();
         if (exists() && isCollection()) {
             try {
                 String parentPath = getResourcePath();
@@ -466,7 +466,7 @@ public class VfsDavResource implements DavResource {
                 }
             }
         } catch (IOException e) {
-            log.error("Error while importing resource: " + e.toString());
+            log.error("Error while importing resource: {}", e.toString());
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
@@ -488,7 +488,7 @@ public class VfsDavResource implements DavResource {
             FileObject child = fileObject.getChild(memberName);
             child.deleteAll();
         } catch (IOException e) {
-            log.error("Error while remove member: " + e.toString());
+            log.error("Error while remove member: {}", e.toString());
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
@@ -524,7 +524,7 @@ public class VfsDavResource implements DavResource {
             FileObject destFile = destRootObject.resolveFile(destination.getLocator().getRepositoryPath());
             fileObject.moveTo(destFile);
         } catch (IOException e) {
-            log.error("Error while move resource: " + e.toString());
+            log.error("Error while move resource: {}", e.toString());
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
@@ -550,7 +550,7 @@ public class VfsDavResource implements DavResource {
             FileObject destFile = destRootObject.resolveFile(destination.getLocator().getRepositoryPath());
             destFile.copyFrom(fileObject, new AllFileSelector());
         } catch (IOException e) {
-            log.error("Error while copy resource: " + e.toString());
+            log.error("Error while copy resource: {}", e.toString());
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

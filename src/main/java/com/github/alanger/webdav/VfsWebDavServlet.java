@@ -2,6 +2,7 @@ package com.github.alanger.webdav;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -51,22 +52,11 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private LockManager lockManager;
-    private DavResourceFactory resourceFactory;
-    private DavLocatorFactory locatorFactory;
-    private DavSessionProvider davSessionProvider;
-
-    private UserAuthenticator userAuthenticator;
-    private FileSystemOptions fileSystemOptions;
-    private FilesCache filesCache;
-    private CacheStrategy cacheStrategy;
-    private FileSystemManager fileSystemManager;
-
-    public final static String VERSION = VfsWebDavServlet.class.getPackage().getImplementationVersion() != null
-            ? VfsWebDavServlet.class.getPackage().getImplementationVersion() : "unknown";
-
+    public static final String VERSION = VfsWebDavServlet.class.getPackage().getImplementationVersion() != null
+            ? VfsWebDavServlet.class.getPackage().getImplementationVersion()
+            : "unknown";
     public static final String INIT_PARAM_ROOTPATH = "rootpath";
     public static final String INIT_PARAM_DOMAIN = "domain";
     public static final String INIT_PARAM_LOGIN = "login";
@@ -79,11 +69,20 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     public static final String INIT_PARAM_LOGGER = "logger-name";
     public static final String INIT_PARAM_AUDMETHODS = "audit-methods";
 
-    private FileObject root;
-    private String rootpath;
     private boolean listingsDirectory = true;
     private boolean includeContextPath = true;
     private List<String> auditMethods = null;
+
+    private DavSessionProvider davSessionProvider;
+    private DavLocatorFactory locatorFactory;
+    private LockManager lockManager;
+    private DavResourceFactory resourceFactory;
+    private UserAuthenticator userAuthenticator;
+    private FileSystemOptions fileSystemOptions;
+    private FilesCache filesCache;
+    private CacheStrategy cacheStrategy;
+    private FileSystemManager fileSystemManager;
+    private FileObject fileObject;
 
     @Override
     protected boolean isPreconditionValid(WebdavRequest request, DavResource resource) {
@@ -91,7 +90,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     }
 
     @Override
-    public synchronized DavSessionProvider getDavSessionProvider() {
+    public DavSessionProvider getDavSessionProvider() {
         if (davSessionProvider == null) {
             davSessionProvider = new VfsDavSessionProvider();
         }
@@ -130,7 +129,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     @Override
     public DavResourceFactory getResourceFactory() {
         if (resourceFactory == null) {
-            resourceFactory = new VfsDavResourceFactory(getLockManager(), root);
+            resourceFactory = new VfsDavResourceFactory(getLockManager(), fileObject);
         }
         return resourceFactory;
     }
@@ -189,15 +188,15 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
         this.fileSystemOptions = fileSystemOptions;
     }
 
-    public void setFilesCache(FilesCache filesCache) {
-        this.filesCache = filesCache;
-    }
-
     public FilesCache getFilesCache() {
         if (filesCache == null) {
             filesCache = new SoftRefFilesCache();
         }
         return filesCache;
+    }
+
+    public void setFilesCache(FilesCache filesCache) {
+        this.filesCache = filesCache;
     }
 
     public CacheStrategy getCacheStrategy() {
@@ -213,11 +212,10 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
 
     public FileSystemManager getFileSystemManager() throws FileSystemException {
         if (fileSystemManager == null) {
-            StandardFileSystemManager manager = new StandardFileSystemManager();
-            manager.setFilesCache(getFilesCache());
-            manager.setCacheStrategy(getCacheStrategy());
-            manager.init();
-            fileSystemManager = manager;
+            fileSystemManager = new StandardFileSystemManager();
+            ((StandardFileSystemManager) fileSystemManager).setFilesCache(getFilesCache());
+            ((StandardFileSystemManager) fileSystemManager).setCacheStrategy(getCacheStrategy());
+            ((StandardFileSystemManager) fileSystemManager).init();
         }
         return fileSystemManager;
     }
@@ -236,7 +234,6 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
 
     public void setLogger(String loggerName) {
         this.logger = LoggerFactory.getLogger(loggerName);
-        ;
     }
 
     public List<String> getAuditMethods() {
@@ -280,7 +277,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
             setAuditMethods(auditMethodsValue);
         }
 
-        rootpath = getProperty(config.getInitParameter(INIT_PARAM_ROOTPATH));
+        String rootpath = getProperty(config.getInitParameter(INIT_PARAM_ROOTPATH));
         if (rootpath == null)
             throw new ServletException(message + ", init parameter '" + INIT_PARAM_ROOTPATH + "' is null");
 
@@ -308,15 +305,14 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
             String domain = getProperty(config.getInitParameter(INIT_PARAM_DOMAIN));
             String login = getProperty(config.getInitParameter(INIT_PARAM_LOGIN));
             String password = getProperty(config.getInitParameter(INIT_PARAM_PASSWORD));
-            StaticUserAuthenticator userAuthenticator = new StaticUserAuthenticator(domain, login, password);
-            setUserAuthenticator(userAuthenticator);
+            setUserAuthenticator(new StaticUserAuthenticator(domain, login, password));
         }
 
         String filesCacheValue = getProperty(config.getInitParameter(INIT_PARAM_FILESCACHE));
         if (filesCache == null && filesCacheValue != null) {
             try {
                 Class<?> filesCacheClass = Class.forName(filesCacheValue);
-                setFilesCache((FilesCache) filesCacheClass.newInstance());
+                setFilesCache((FilesCache) filesCacheClass.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 throw new ServletException(message, e);
             }
@@ -335,15 +331,15 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
         }
 
         try {
-            root = getFileSystemManager().resolveFile(rootpath, getFileSystemOptions());
-            if (root == null || !root.exists())
+            fileObject = getFileSystemManager().resolveFile(rootpath, getFileSystemOptions());
+            if (fileObject == null || !fileObject.exists())
                 throw new ServletException(message + ", VFS root file not exist or null");
         } catch (FileSystemException e) {
             throw new ServletException(message, e);
         }
 
         logger.info("Init servlet: {}, rootpath: {}, listingsDirectory: {}, version: {}", config.getServletName(),
-                root.getPublicURIString(), listingsDirectory, VERSION);
+                fileObject.getPublicURIString(), listingsDirectory, VERSION);
         super.init(config);
     }
 
@@ -353,6 +349,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
             // Include servlet path to prefix
             if (includeContextPath) {
                 HttpServletRequest wrapper = new HttpServletRequestWrapper(request) {
+                    @Override
                     public String getContextPath() {
                         return request.getContextPath() + request.getServletPath();
                     }
@@ -368,8 +365,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
                 String id = request.getSession(false) != null ? request.getSession(false).getId() : null;
                 String requestURI = Text.unescape(request.getRequestURI());
                 String dest = request.getHeader("Destination");
-                if (dest != null)
-                    dest = Text.unescape(dest.replaceAll("^http.*://.*?/", "/"));
+                dest = (dest != null) ? Text.unescape(dest.replaceAll("^http.*://[^/]*+", "")) : null;
                 String msg = response.getStatus() + " " + request.getMethod() + " : " + requestURI
                         + (dest != null ? ", Destination: " + dest : "") + ", User: " + user + ", ID: " + id
                         + ", Addr: " + request.getRemoteAddr();
@@ -382,7 +378,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     protected void doGet(WebdavRequest request, WebdavResponse response, DavResource resource)
             throws IOException, DavException {
         if (listingsDirectory && resource.exists() && resource.isCollection()) {
-            listingsDirectory(request, response, resource);
+            printDirectory(request, response, resource);
             return;
         }
         super.doGet(request, response, resource);
@@ -391,11 +387,11 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     @Override
     public void destroy() {
         logger.info("Destroy servlet: {}, rootpath: {}, listingsDirectory: {}, version: {}",
-                getServletConfig() != null ? getServletName() : this, root != null ? root.getPublicURIString() : root,
-                listingsDirectory, VERSION);
+                getServletConfig() != null ? getServletName() : this,
+                fileObject != null ? fileObject.getPublicURIString() : fileObject, listingsDirectory, VERSION);
         if (fileSystemManager != null) {
-            if (root != null) {
-                fileSystemManager.closeFileSystem(root.getFileSystem());
+            if (fileObject != null) {
+                fileSystemManager.closeFileSystem(fileObject.getFileSystem());
             }
             fileSystemManager.close();
         }
@@ -409,7 +405,8 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
         return key;
     }
 
-    private void invokeFileSystemBuilder(String builderValue, ServletConfig config) throws Exception {
+    private void invokeFileSystemBuilder(String builderValue, ServletConfig config)
+            throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Class<?> builderClass = Class.forName(builderValue);
         Object builder = builderClass.getMethod("getInstance").invoke(null);
         fileSystemOptions = new FileSystemOptions();
@@ -465,7 +462,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
     private static final String CSS;
 
     static {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} ");
         sb.append("h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} ");
         sb.append("h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} ");
@@ -477,15 +474,14 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
         CSS = sb.toString();
     }
 
-    protected void listingsDirectory(WebdavRequest request, WebdavResponse response, DavResource resource)
+    protected void printDirectory(WebdavRequest request, WebdavResponse response, DavResource resource)
             throws IOException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("<html>");
         sb.append("<head>");
         sb.append("<title>" + getServletConfig().getServletName() + "</title>");
-        // sb.append("<link rel=\"SHORTCUT ICON\" href=\"" + request.getContextPath() +
-        // "/favicon.ico\">");
+        sb.append("<link rel=\"SHORTCUT ICON\" href=\"data:image/png;base64,XXXXX\">");
         sb.append("<style type=\"text/css\">");
         sb.append(getCSS());
         sb.append("</style>");
@@ -498,20 +494,23 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
 
         sb.append("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"5\" align=\"center\">\r\n");
 
+        final String tdHeadStart = "<td align=\"left\"><font size=\"+1\"><strong>";
+        final String tdHeadEnd = "</strong></font></td>\r\n";
+
         // Head table
         sb.append("<tr>\r\n");
-        sb.append("<td align=\"left\"><font size=\"+1\"><strong>");
+        sb.append(tdHeadStart);
         sb.append("Name");
-        sb.append("</strong></font></td>\r\n");
-        sb.append("<td align=\"left\"><font size=\"+1\"><strong>");
+        sb.append(tdHeadEnd);
+        sb.append(tdHeadStart);
         sb.append("Size");
-        sb.append("</strong></font></td>\r\n");
-        sb.append("<td align=\"left\"><font size=\"+1\"><strong>");
+        sb.append(tdHeadEnd);
+        sb.append(tdHeadStart);
         sb.append("Type");
-        sb.append("</strong></font></td>\r\n");
-        sb.append("<td align=\"left\"><font size=\"+1\"><strong>");
+        sb.append(tdHeadEnd);
+        sb.append(tdHeadStart);
         sb.append("Modified");
-        sb.append("</strong></font></td>\r\n");
+        sb.append(tdHeadEnd);
         sb.append("</tr>");
 
         sb.append("<tr><td colspan=\"4\"><a href=\"../\"><tt>[Parent]</tt></a></td></tr>");
@@ -546,31 +545,38 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
             sb.append(name);
             sb.append("</tt></a></td>");
 
+            final String tdStart = "<td><tt>";
+            final String tdEnd = "</tt></td>";
+
             // Size column
             if (isDir) {
-                sb.append("<td><tt>Folder</tt></td>");
+                sb.append(tdStart);
+                sb.append("Folder");
+                sb.append(tdEnd);
             } else {
                 DavProperty<?> prop = res.getProperty(DavPropertyName.GETCONTENTLENGTH);
                 String value = prop != null ? (String) prop.getValue() : null;
                 long length = value != null ? Long.valueOf(value) : 0L;
-                sb.append("<td><tt>").append(renderSize(length)).append("</tt></td>");
+                sb.append(tdStart).append(renderSize(length)).append(tdEnd);
             }
 
             // MIME type column
             if (isDir) {
-                sb.append("<td><tt>-</tt></td>");
+                sb.append(tdStart);
+                sb.append("-");
+                sb.append(tdEnd);
             } else {
-                sb.append("<td><tt>");
+                sb.append(tdStart);
                 DavProperty<?> prop = res.getProperty(DavPropertyName.GETCONTENTTYPE);
                 String mimeType = prop != null ? (String) prop.getValue() : "Unknown type";
                 sb.append(mimeType);
-                sb.append("</tt></td>");
+                sb.append(tdEnd);
             }
 
             // Date column
-            sb.append("<td><tt>");
+            sb.append(tdStart);
             sb.append(shortDF.format(lastModified));
-            sb.append("</tt></td>");
+            sb.append(tdEnd);
 
             sb.append("</tr>");
         }

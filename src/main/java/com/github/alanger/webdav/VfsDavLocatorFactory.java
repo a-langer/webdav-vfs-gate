@@ -24,7 +24,7 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
             log.trace("# createResourceLocator prefix: {}, href: {}", prefix, href);
 
         // build prefix string.
-        StringBuffer b = new StringBuffer("");
+        StringBuilder b = new StringBuilder("");
         if (prefix != null && prefix.length() > 0) {
             b.append(prefix);
         }
@@ -102,7 +102,6 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
             // avoid doubled trailing '/' for the root item
             String suffix = (isCollection && !isRootLocation()) ? "/" : "";
             return href + suffix;
-            // return prefix + resourcePath + suffix; // FIXME cp1251 for webdav4 and http4
         }
 
         public boolean isRootLocation() {
