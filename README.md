@@ -1,9 +1,9 @@
+# WebDAV VFS gate
+
 [![Build Status](https://travis-ci.org/a-langer/webdav-vfs-gate.svg?branch=master)](https://travis-ci.org/a-langer/webdav-vfs-gate)
 [![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/a-langer/webdav-vfs-gate/blob/master/LICENSE)
 [![Maven JitPack](https://img.shields.io/github/tag/a-langer/webdav-vfs-gate.svg?label=maven)](https://jitpack.io/#a-langer/webdav-vfs-gate)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.a-langer/webdav-vfs-gate/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.a-langer/webdav-vfs-gate)
-
-# WebDAV VFS gate
 
 This project implement WebDAV gateway for accessing to different file systems. The file systems access level is based on the [Apache Commons VFS][1] library. WebDAV protocol layer is based on [Apache Jackrabbit][2] library.
 
@@ -184,9 +184,9 @@ Add this dependency to your `pom.xml` to reference the library:
 
 ## Related repositories
 
-* [tomcat-cache-realm](https://github.com/shopping24/tomcat-cache-realm) - Cache to authentication realm in Tomcat.
-* [hazelcast-tomcat-sessionmanager](https://github.com/hazelcast/hazelcast-tomcat-sessionmanager) - Hazelcast Tomcat Session Manager.
-* [tomcat-vault](https://github.com/web-servers/tomcat-vault) - Vault for Apache Tomcat.
+* [shiro-ext](https://github.com/a-langer/shiro-ext) - Extension for security framework [Apache Shiro](https://shiro.apache.org/introduction.html).
+* [buji-pac4j](https://github.com/bujiio/buji-pac4j) - Security library for Shiro web applications which supports OAuth, SAML, CAS, OpenID, Google App Engine, Kerberos, JWT and more.
+* [UrlRewriteFilter](https://github.com/paultuckey/urlrewritefilter) - Java Web Filter for any J2EE compliant web application server.
 
 [1]: https://commons.apache.org/proper/commons-vfs/index.html
 [2]: https://jackrabbit.apache.org/jcr/components/jackrabbit-webdav-library.html
