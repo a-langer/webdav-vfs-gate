@@ -133,8 +133,10 @@ public class VfsWebDavTest {
         request.setMethod("PROPPATCH");
         request.setRequestURI("/test1/file1.txt");
         request.setContent(("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
-                + "<propertyupdate xmlns=\"DAV:\" xmlns:u=\"mynamespace\">\n" + "  <set><prop>\n"
-                + "    <u:myprop>myvalue</u:myprop>\n" + "  </prop></set>\n" + "</propertyupdate>").getBytes());
+                + "<propertyupdate xmlns=\"DAV:\" xmlns:u=\"mynamespace\">\n"
+                + "  <set><prop>\n"
+                + "    <u:myprop>myvalue</u:myprop>\n"
+                + "  </prop></set>\n" + "</propertyupdate>").getBytes());
         servlet.service(request, response);
         assertEquals(207, response.getStatus()); // 207 Multi-Status
     }
