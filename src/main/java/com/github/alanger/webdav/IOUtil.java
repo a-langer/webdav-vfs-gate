@@ -14,7 +14,8 @@ import java.util.Date;
  * See org.apache.jackrabbit.server.io.IOUtil
  * <p>
  * 
- * <code>IOUtil</code> provides utility methods used for import and export operations.
+ * <code>IOUtil</code> provides utility methods used for import and export
+ * operations.
  */
 public final class IOUtil {
 
@@ -81,11 +82,13 @@ public final class IOUtil {
      * &lt;mimeType&gt;; charset="&lt;encoding&gt;"
      * </pre>
      * 
-     * If the specified mimeType is <code>null</code>, <code>null</code> is returned.
+     * If the specified mimeType is <code>null</code>, <code>null</code> is
+     * returned.
      *
      * @param mimeType
      * @param encoding
-     * @return contentType or <code>null</code> if the specified mimeType is <code>null</code>
+     * @return contentType or <code>null</code> if the specified mimeType is
+     *         <code>null</code>
      */
     public static String buildContentType(String mimeType, String encoding) {
         String contentType = mimeType;
@@ -118,7 +121,8 @@ public final class IOUtil {
      * Retrieve the encoding from the specified contentType.
      *
      * @param contentType
-     * @return encoding or <code>null</code> if the specified contentType is <code>null</code> or does not define a
+     * @return encoding or <code>null</code> if the specified contentType is
+     *         <code>null</code> or does not define a
      *         charset.
      */
     public static String getEncoding(String contentType) {
@@ -144,7 +148,8 @@ public final class IOUtil {
      *
      * @param inputStream
      *            the input stream
-     * @return temp. file or <code>null</code> if the specified input is <code>null</code>.
+     * @return temp. file or <code>null</code> if the specified input is
+     *         <code>null</code>.
      */
     public static File getTempFile(InputStream inputStream) throws IOException {
         if (inputStream == null) {
@@ -152,7 +157,7 @@ public final class IOUtil {
         }
         // we need a tmp file, since the import could fail
         File tmpFile = File.createTempFile("__importcontext", ".tmp");
-        try(FileOutputStream out = new FileOutputStream(tmpFile);) {
+        try (FileOutputStream out = new FileOutputStream(tmpFile);) {
             byte[] buffer = new byte[8192];
             int read;
             while ((read = inputStream.read(buffer)) > 0) {

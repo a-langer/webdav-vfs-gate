@@ -64,14 +64,16 @@ public class Text {
      * Digest the plain string using the given algorithm.
      *
      * @param algorithm
-     *            The alogrithm for the digest. This algorithm must be supported by the MessageDigest class.
+     *            The alogrithm for the digest. This algorithm must be supported by
+     *            the MessageDigest class.
      * @param data
      *            The plain text String to be digested.
      * @param enc
      *            The character encoding to use
      * @return The digested plain text String represented as Hex digits.
      * @throws java.security.NoSuchAlgorithmException
-     *             if the desired algorithm is not supported by the MessageDigest class.
+     *             if the desired algorithm is not supported by the MessageDigest
+     *             class.
      * @throws java.io.UnsupportedEncodingException
      *             if the encoding is not supported
      */
@@ -85,12 +87,14 @@ public class Text {
      * Digest the plain string using the given algorithm.
      *
      * @param algorithm
-     *            The algorithm for the digest. This algorithm must be supported by the MessageDigest class.
+     *            The algorithm for the digest. This algorithm must be supported by
+     *            the MessageDigest class.
      * @param data
      *            the data to digest with the given algorithm
      * @return The digested plain text String represented as Hex digits.
      * @throws java.security.NoSuchAlgorithmException
-     *             if the desired algorithm is not supported by the MessageDigest class.
+     *             if the desired algorithm is not supported by the MessageDigest
+     *             class.
      */
     public static String digest(String algorithm, byte[] data) throws NoSuchAlgorithmException {
 
@@ -105,8 +109,10 @@ public class Text {
     }
 
     /**
-     * returns an array of strings decomposed of the original string, split at every occurrence of 'ch'. if 2 'ch'
-     * follow each other with no intermediate characters, empty "" entries are avoided.
+     * returns an array of strings decomposed of the original string, split at every
+     * occurrence of 'ch'. if 2 'ch'
+     * follow each other with no intermediate characters, empty "" entries are
+     * avoided.
      *
      * @param str
      *            the string to decompose
@@ -119,7 +125,8 @@ public class Text {
     }
 
     /**
-     * returns an array of strings decomposed of the original string, split at every occurrence of 'ch'.
+     * returns an array of strings decomposed of the original string, split at every
+     * occurrence of 'ch'.
      *
      * @param str
      *            the string to decompose
@@ -175,7 +182,8 @@ public class Text {
     }
 
     /**
-     * Replaces all occurrences of <code>oldString</code> in <code>text</code> with <code>newString</code>.
+     * Replaces all occurrences of <code>oldString</code> in <code>text</code> with
+     * <code>newString</code>.
      *
      * @param text
      * @param oldString
@@ -207,7 +215,8 @@ public class Text {
     }
 
     /**
-     * Replaces XML characters in the given string that might need escaping as XML text or attribute
+     * Replaces XML characters in the given string that might need escaping as XML
+     * text or attribute
      *
      * @param text
      *            text to be escaped
@@ -218,7 +227,8 @@ public class Text {
     }
 
     /**
-     * Replaces HTML characters in the given string that might need escaping as HTML text or attribute
+     * Replaces HTML characters in the given string that might need escaping as HTML
+     * text or attribute
      *
      * @param text
      *            text to be escaped
@@ -238,21 +248,21 @@ public class Text {
         for (int i = 0; i < length; i++) {
             int ch = text.charAt(i);
             switch (ch) {
-            case '<':
-            case '>':
-            case '&':
-            case '"':
-            case '\'':
-                if (buf == null) {
-                    buf = new StringBuilder();
-                }
-                if (i > 0) {
-                    buf.append(text.substring(pos, i));
-                }
-                pos = i + 1;
-                break;
-            default:
-                continue;
+                case '<':
+                case '>':
+                case '&':
+                case '"':
+                case '\'':
+                    if (buf == null) {
+                        buf = new StringBuilder();
+                    }
+                    if (i > 0) {
+                        buf.append(text.substring(pos, i));
+                    }
+                    pos = i + 1;
+                    break;
+                default:
+                    continue;
             }
             if (ch == '<') {
                 buf.append("&lt;");
@@ -277,8 +287,10 @@ public class Text {
     }
 
     /**
-     * The list of characters that are not encoded by the <code>escape()</code> and <code>unescape()</code> METHODS.
-     * They contains the characters as defined 'unreserved' in section 2.3 of the RFC 2396 'URI generic syntax':
+     * The list of characters that are not encoded by the <code>escape()</code> and
+     * <code>unescape()</code> METHODS.
+     * They contains the characters as defined 'unreserved' in section 2.3 of the
+     * RFC 2396 'URI generic syntax':
      * <p>
      * 
      * <pre>
@@ -320,8 +332,10 @@ public class Text {
     }
 
     /**
-     * Does an URL encoding of the <code>string</code> using the <code>escape</code> character. The characters that
-     * don't need encoding are those defined 'unreserved' in section 2.3 of the 'URI generic syntax' RFC 2396, but
+     * Does an URL encoding of the <code>string</code> using the <code>escape</code>
+     * character. The characters that
+     * don't need encoding are those defined 'unreserved' in section 2.3 of the 'URI
+     * generic syntax' RFC 2396, but
      * without the escape character.
      *
      * @param string
@@ -337,9 +351,12 @@ public class Text {
     }
 
     /**
-     * Does an URL encoding of the <code>string</code> using the <code>escape</code> character. The characters that
-     * don't need encoding are those defined 'unreserved' in section 2.3 of the 'URI generic syntax' RFC 2396, but
-     * without the escape character. If <code>isPath</code> is <code>true</code>, additionally the slash '/' is ignored,
+     * Does an URL encoding of the <code>string</code> using the <code>escape</code>
+     * character. The characters that
+     * don't need encoding are those defined 'unreserved' in section 2.3 of the 'URI
+     * generic syntax' RFC 2396, but
+     * without the escape character. If <code>isPath</code> is <code>true</code>,
+     * additionally the slash '/' is ignored,
      * too.
      *
      * @param string
@@ -370,7 +387,8 @@ public class Text {
     }
 
     /**
-     * Does a URL encoding of the <code>string</code>. The characters that don't need encoding are those defined
+     * Does a URL encoding of the <code>string</code>. The characters that don't
+     * need encoding are those defined
      * 'unreserved' in section 2.3 of the 'URI generic syntax' RFC 2396.
      *
      * @param string
@@ -384,9 +402,12 @@ public class Text {
     }
 
     /**
-     * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined
-     * 'unreserved' in section 2.3 of the 'URI generic syntax' RFC 2396. In contrast to the {@link #escape(String)}
-     * method, not the entire path string is escaped, but every individual part (i.e. the slashes are not escaped).
+     * Does a URL encoding of the <code>path</code>. The characters that don't need
+     * encoding are those defined
+     * 'unreserved' in section 2.3 of the 'URI generic syntax' RFC 2396. In contrast
+     * to the {@link #escape(String)}
+     * method, not the entire path string is escaped, but every individual part
+     * (i.e. the slashes are not escaped).
      *
      * @param path
      *            the path to encode
@@ -399,8 +420,10 @@ public class Text {
     }
 
     /**
-     * Does a URL decoding of the <code>string</code> using the <code>escape</code> character. Please note that in
-     * opposite to the {@link java.net.URLDecoder} it does not transform the + into spaces.
+     * Does a URL decoding of the <code>string</code> using the <code>escape</code>
+     * character. Please note that in
+     * opposite to the {@link java.net.URLDecoder} it does not transform the + into
+     * spaces.
      *
      * @param string
      *            the string to decode
@@ -410,7 +433,8 @@ public class Text {
      * @throws NullPointerException
      *             if <code>string</code> is <code>null</code>.
      * @throws IllegalArgumentException
-     *             if the 2 characters following the escape character do not represent a hex-number or if not enough
+     *             if the 2 characters following the escape character do not
+     *             represent a hex-number or if not enough
      *             characters follow an escape character
      */
     public static String unescape(String string, char escape) {
@@ -436,7 +460,8 @@ public class Text {
     }
 
     /**
-     * Does a URL decoding of the <code>string</code>. Please note that in opposite to the {@link java.net.URLDecoder}
+     * Does a URL decoding of the <code>string</code>. Please note that in opposite
+     * to the {@link java.net.URLDecoder}
      * it does not transform the + into spaces.
      *
      * @param string
@@ -447,15 +472,18 @@ public class Text {
      * @throws ArrayIndexOutOfBoundsException
      *             if not enough character follow an escape character
      * @throws IllegalArgumentException
-     *             if the 2 characters following the escape character do not represent a hex-number.
+     *             if the 2 characters following the escape character do not
+     *             represent a hex-number.
      */
     public static String unescape(String string) {
         return unescape(string, '%');
     }
 
     /**
-     * Escapes all illegal JCR name characters of a string. The encoding is loosely modeled after URI encoding, but only
-     * encodes the characters it absolutely needs to in order to make the resulting string a valid JCR name. Use
+     * Escapes all illegal JCR name characters of a string. The encoding is loosely
+     * modeled after URI encoding, but only
+     * encodes the characters it absolutely needs to in order to make the resulting
+     * string a valid JCR name. Use
      * {@link #unescapeIllegalJcrChars(String)} for decoding.
      * <p>
      * QName EBNF:
@@ -479,7 +507,8 @@ public class Text {
     }
 
     /**
-     * Escapes all illegal JCR 1.0 name characters of a string. Use {@link #unescapeIllegalJcrChars(String)} for
+     * Escapes all illegal JCR 1.0 name characters of a string. Use
+     * {@link #unescapeIllegalJcrChars(String)} for
      * decoding.
      * <p>
      * QName EBNF:
@@ -546,7 +575,8 @@ public class Text {
     /**
      * Unescapes previously escaped jcr chars.
      * <p>
-     * Please note, that this does not exactly the same as the url related {@link #unescape(String)}, since it handles
+     * Please note, that this does not exactly the same as the url related
+     * {@link #unescape(String)}, since it handles
      * the byte-encoding differently.
      *
      * @param name
@@ -574,32 +604,37 @@ public class Text {
     }
 
     /**
-     * Returns the name part of the path. If the given path is already a name (i.e. contains no slashes) it is returned.
+     * Returns the name part of the path. If the given path is already a name (i.e.
+     * contains no slashes) it is returned.
      *
      * @param path
      *            the path
-     * @return the name part or <code>null</code> if <code>path</code> is <code>null</code>.
+     * @return the name part or <code>null</code> if <code>path</code> is
+     *         <code>null</code>.
      */
     public static String getName(String path) {
         return getName(path, '/');
     }
 
     /**
-     * Returns the name part of the path, delimited by the given <code>delim</code>. If the given path is already a name
+     * Returns the name part of the path, delimited by the given <code>delim</code>.
+     * If the given path is already a name
      * (i.e. contains no <code>delim</code> characters) it is returned.
      *
      * @param path
      *            the path
      * @param delim
      *            the delimiter
-     * @return the name part or <code>null</code> if <code>path</code> is <code>null</code>.
+     * @return the name part or <code>null</code> if <code>path</code> is
+     *         <code>null</code>.
      */
     public static String getName(String path, char delim) {
         return path == null ? null : path.substring(path.lastIndexOf(delim) + 1);
     }
 
     /**
-     * Same as {@link #getName(String)} but adding the possibility to pass paths that end with a trailing '/'
+     * Same as {@link #getName(String)} but adding the possibility to pass paths
+     * that end with a trailing '/'
      *
      * @see #getName(String)
      */
@@ -611,7 +646,8 @@ public class Text {
     }
 
     /**
-     * Returns the namespace prefix of the given <code>qname</code>. If the prefix is missing, an empty string is
+     * Returns the namespace prefix of the given <code>qname</code>. If the prefix
+     * is missing, an empty string is
      * returned. Please note, that this method does not validate the name or prefix.
      * <p>
      * The qname has the format: qname := [prefix ':'] local;
@@ -631,7 +667,8 @@ public class Text {
     }
 
     /**
-     * Returns the local name of the given <code>qname</code>. Please note, that this method does not validate the name.
+     * Returns the local name of the given <code>qname</code>. Please note, that
+     * this method does not validate the name.
      * <p>
      * The qname has the format: qname := [prefix ':'] local;
      *
@@ -665,13 +702,15 @@ public class Text {
     }
 
     /**
-     * Determines if the <code>descendant</code> path is hierarchical a descendant of <code>path</code>.
+     * Determines if the <code>descendant</code> path is hierarchical a descendant
+     * of <code>path</code>.
      *
      * @param path
      *            the current path
      * @param descendant
      *            the potential descendant
-     * @return <code>true</code> if the <code>descendant</code> is a descendant; <code>false</code> otherwise.
+     * @return <code>true</code> if the <code>descendant</code> is a descendant;
+     *         <code>false</code> otherwise.
      */
     public static boolean isDescendant(String path, String descendant) {
         String pattern = path.endsWith("/") ? path : path + "/";
@@ -679,13 +718,15 @@ public class Text {
     }
 
     /**
-     * Determines if the <code>descendant</code> path is hierarchical a descendant of <code>path</code> or equal to it.
+     * Determines if the <code>descendant</code> path is hierarchical a descendant
+     * of <code>path</code> or equal to it.
      *
      * @param path
      *            the path to check
      * @param descendant
      *            the potential descendant
-     * @return <code>true</code> if the <code>descendant</code> is a descendant or equal; <code>false</code> otherwise.
+     * @return <code>true</code> if the <code>descendant</code> is a descendant or
+     *         equal; <code>false</code> otherwise.
      */
     public static boolean isDescendantOrEqual(String path, String descendant) {
         if (path.equals(descendant)) {
@@ -722,7 +763,8 @@ public class Text {
     }
 
     /**
-     * Same as {@link #getRelativeParent(String, int)} but adding the possibility to pass paths that end with a trailing
+     * Same as {@link #getRelativeParent(String, int)} but adding the possibility to
+     * pass paths that end with a trailing
      * '/'
      *
      * @see #getRelativeParent(String, int)
@@ -761,15 +803,19 @@ public class Text {
     }
 
     /**
-     * Performs variable replacement on the given string value. Each <code>${...}</code> sequence within the given value
-     * is replaced with the value of the named parser variable. If a variable is not found in the properties an
-     * IllegalArgumentException is thrown unless <code>ignoreMissing</code> is <code>true</code>. In the later case, the
+     * Performs variable replacement on the given string value. Each
+     * <code>${...}</code> sequence within the given value
+     * is replaced with the value of the named parser variable. If a variable is not
+     * found in the properties an
+     * IllegalArgumentException is thrown unless <code>ignoreMissing</code> is
+     * <code>true</code>. In the later case, the
      * missing variable is replaced by the empty string.
      *
      * @param value
      *            the original value
      * @param ignoreMissing
-     *            if <code>true</code>, missing variables are replaced by the empty string.
+     *            if <code>true</code>, missing variables are replaced by the empty
+     *            string.
      * @return value after variable replacements
      * @throws IllegalArgumentException
      *             if the replacement of a referenced variable is not found

@@ -61,7 +61,8 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
         private Locator(String prefix, String resourcePath, DavLocatorFactory factory) {
             this.prefix = prefix;
             this.factory = factory;
-            // remove trailing '/' that is not part of the resourcePath except for the root item.
+            // remove trailing '/' that is not part of the resourcePath except for the root
+            // item.
             if (resourcePath.endsWith("/") && !"/".equals(resourcePath)) {
                 resourcePath = resourcePath.substring(0, resourcePath.length() - 1);
             }
@@ -113,7 +114,8 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
         }
 
         /**
-         * Returns the same as {@link #getResourcePath()}. No encoding is performed at all.
+         * Returns the same as {@link #getResourcePath()}. No encoding is performed at
+         * all.
          * 
          * @see DavResourceLocator#getRepositoryPath()
          */
@@ -122,7 +124,8 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
         }
 
         /**
-         * Computes the hash code from the href, which is built using the final fields prefix and resourcePath.
+         * Computes the hash code from the href, which is built using the final fields
+         * prefix and resourcePath.
          *
          * @return the hash code
          */
@@ -132,12 +135,14 @@ public class VfsDavLocatorFactory implements DavLocatorFactory {
         }
 
         /**
-         * Equality of path is achieved if the specified object is a <code>DavResourceLocator</code> object with the
+         * Equality of path is achieved if the specified object is a
+         * <code>DavResourceLocator</code> object with the
          * same hash code.
          *
          * @param obj
          *            the object to compare to
-         * @return <code>true</code> if the 2 objects are equal; <code>false</code> otherwise
+         * @return <code>true</code> if the 2 objects are equal; <code>false</code>
+         *         otherwise
          */
         @Override
         public boolean equals(Object obj) {

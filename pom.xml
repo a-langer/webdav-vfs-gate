@@ -64,7 +64,8 @@
     </repositories>
 
     <properties>
-        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
@@ -201,11 +202,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
                     <meminitial>64m</meminitial>
                     <maxmem>128m</maxmem>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                     <optimize>true</optimize>
                     <compilerArgs>
                         <arg>-parameters</arg>
@@ -281,21 +279,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven.source.plugin.version}</version>
-                <configuration>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>${maven.clean.plugin.version}</version>
                 <configuration>
@@ -309,25 +292,7 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven.javadoc.plugin.version}</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                    <additionalOptions>-Xdoclint:none</additionalOptions>
-                    <additionalJOption>-Xdoclint:none</additionalJOption>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- mvn surefire:test@local -->
+            <!-- mvn clean test-compile surefire:test@local -Dsurefire.skipAfterFailureCount=1 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -354,23 +319,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-                <version>${formatter.maven.plugin.version}</version>
-                <configuration>
-                    <_configFile>${project.basedir}/google-code-style.xml</_configFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>format-code</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -391,11 +339,62 @@
         </resources>
     </build>
 
+    <!-- mvn clean verify -Possrh -DskipTests -->
     <profiles>
         <profile>
             <id>ossrh</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven.source.plugin.version}</version>
+                        <configuration>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven.javadoc.plugin.version}</version>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.revelc.code.formatter</groupId>
+                        <artifactId>formatter-maven-plugin</artifactId>
+                        <version>${formatter.maven.plugin.version}</version>
+                        <configuration>
+                            <configFile>${project.basedir}/eclipse-java-formatter.xml</configFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>format-code</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>

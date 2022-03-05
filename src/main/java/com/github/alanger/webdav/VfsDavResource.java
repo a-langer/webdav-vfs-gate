@@ -209,7 +209,8 @@ public class VfsDavResource implements DavResource {
             try (FileContent content = fileObject.getContent()) {
                 if (!isCollection()) {
                     contentLength = content.getSize();
-                    // Set "content.types.user.table" properties, $JRE_HOME/lib/content-types.properties
+                    // Set "content.types.user.table" properties,
+                    // $JRE_HOME/lib/content-types.properties
                     mimeType = content.getContentInfo().getContentType();
                 } else {
                     mimeType = "inode/directory";
@@ -245,7 +246,8 @@ public class VfsDavResource implements DavResource {
         }
 
         /*
-         * set current lock information. If no lock is set to this resource, an empty lock discovery will be returned in
+         * set current lock information. If no lock is set to this resource, an empty
+         * lock discovery will be returned in
          * the response.
          */
         properties.add(new LockDiscovery(getLock(Type.WRITE, Scope.EXCLUSIVE)));
@@ -356,9 +358,12 @@ public class VfsDavResource implements DavResource {
         Map<? extends PropEntry, ?> failures = new HashMap<>(); // <PropEntry, RepositoryException>
 
         /*
-         * loop over list of properties/names that were successfully altered and them to the multistatus response
-         * respecting the result of the complete action. in case of failure set the status to 'failed-dependency' in
-         * order to indicate, that altering those names/properties would have succeeded, if no other error occured.
+         * loop over list of properties/names that were successfully altered and them to
+         * the multistatus response
+         * respecting the result of the complete action. in case of failure set the
+         * status to 'failed-dependency' in
+         * order to indicate, that altering those names/properties would have succeeded,
+         * if no other error occured.
          */
         for (PropEntry propEntry : changeList) {
             int statusCode;
