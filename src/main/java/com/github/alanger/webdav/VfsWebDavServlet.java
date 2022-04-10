@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -155,20 +156,20 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
             zipBuilder.setCharset(fileSystemOptions, StandardCharsets.UTF_8);
 
             FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
-            ftpsBuilder.setConnectTimeout(fileSystemOptions, 1000 * 5);
+            ftpsBuilder.setConnectTimeout(fileSystemOptions, Duration.ofSeconds(5));
             ftpsBuilder.setUserDirIsRoot(fileSystemOptions, false);
             ftpsBuilder.setAutodetectUtf8(fileSystemOptions, true);
             ftpsBuilder.setPassiveMode(fileSystemOptions, true);
             ftpsBuilder.setControlEncoding(fileSystemOptions, StandardCharsets.UTF_8.name());
 
             SftpFileSystemConfigBuilder sftpBuilder = SftpFileSystemConfigBuilder.getInstance();
-            sftpBuilder.setConnectTimeoutMillis(fileSystemOptions, 1000 * 5);
+            sftpBuilder.setConnectTimeout(fileSystemOptions, Duration.ofSeconds(5));
             sftpBuilder.setUserDirIsRoot(fileSystemOptions, false);
             sftpBuilder.setStrictHostKeyChecking(fileSystemOptions, "no");
 
             Webdav4FileSystemConfigBuilder webdavBuilder = Webdav4FileSystemConfigBuilder.getInstance();
-            webdavBuilder.setConnectionTimeout(fileSystemOptions, 1000 * 5 * 10);
-            webdavBuilder.setSoTimeout(fileSystemOptions, 1000 * 5 * 10);
+            webdavBuilder.setConnectionTimeout(fileSystemOptions, Duration.ofSeconds(50));
+            webdavBuilder.setSoTimeout(fileSystemOptions, Duration.ofSeconds(50));
             webdavBuilder.setMaxConnectionsPerHost(fileSystemOptions, 1000);
             webdavBuilder.setMaxTotalConnections(fileSystemOptions, 1000);
             webdavBuilder.setHostnameVerificationEnabled(fileSystemOptions, false);
@@ -430,17 +431,27 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
                     try {
                         value = Integer.parseInt(param);
                         try {
-                            m = builderClass.getMethod(name, FileSystemOptions.class, int.class);
+                            m = builderClass.getMethod(name, FileSystemOptions.class, Duration.class);
+                            value = Duration.ofMillis((int)value);
                         } catch (NoSuchMethodException e) {
-                            m = builderClass.getMethod(name, FileSystemOptions.class, Integer.class);
+                            try {
+                                m = builderClass.getMethod(name, FileSystemOptions.class, int.class);
+                            } catch (NoSuchMethodException e1) {
+                                m = builderClass.getMethod(name, FileSystemOptions.class, Integer.class);
+                            }
                         }
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException nfe) {
                         try {
                             value = Long.parseLong(param);
                             try {
-                                m = builderClass.getMethod(name, FileSystemOptions.class, long.class);
-                            } catch (NoSuchMethodException nsme) {
-                                m = builderClass.getMethod(name, FileSystemOptions.class, Long.class);
+                                m = builderClass.getMethod(name, FileSystemOptions.class, Duration.class);
+                                value = Duration.ofMillis((long)value);
+                            } catch (NoSuchMethodException e) {
+                                try {
+                                    m = builderClass.getMethod(name, FileSystemOptions.class, long.class);
+                                } catch (NoSuchMethodException e1) {
+                                    m = builderClass.getMethod(name, FileSystemOptions.class, Long.class);
+                                }
                             }
                         } catch (NumberFormatException e1) {
                             try {
@@ -452,7 +463,7 @@ public class VfsWebDavServlet extends AbstractWebdavServlet {
                     }
                 }
 
-                logger.trace("# builder: {}, {}, {}, {}", key, name, value, value.getClass());
+                logger.trace("builder: {}, {}, {}, {}", key, name, value, value.getClass());
                 m.invoke(builder, fileSystemOptions, value);
             }
         }
